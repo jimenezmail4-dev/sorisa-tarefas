@@ -642,8 +642,9 @@ loadAll();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sorisa-tarefas/sw.js')
-    .catch(e => console.warn('SW:', e));
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
+  });
 }
 </script>
 </body>
