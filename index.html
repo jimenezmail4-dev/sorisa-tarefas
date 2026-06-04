@@ -114,6 +114,7 @@
   .tl.grey   { background:#c5c8d8; }
   .p-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
   select.inline { background:var(--bg3); border:1px solid var(--border); color:var(--text); padding:2px 5px; border-radius:5px; font-family:'DM Mono',monospace; font-size:10px; outline:none; cursor:pointer; }
+  .task-actions { display:contents; }
   .btn-ic { background:none; border:none; cursor:pointer; color:var(--muted); font-size:12px; padding:2px 5px; border-radius:4px; line-height:1; white-space:nowrap; }
   .btn-ic:hover { background:var(--faint); color:var(--text); }
   .btn-del:hover { color:var(--red); }
@@ -180,11 +181,16 @@
     .week-sel-btn { font-size:9px; padding:1px 6px; }
     .btn-ic { font-size:10px; padding:1px 4px; }
 
-    .task { padding:8px 10px 8px 12px; gap:5px; flex-wrap:nowrap; }
-    .task-text { font-size:12px; }
-    .dates-info { font-size:9px; gap:1px; }
-    .time-badge { font-size:9px; }
-    select.inline { font-size:9px; padding:1px 3px; max-width:72px; }
+    .task { padding:8px 10px 8px 12px; gap:5px; flex-wrap:wrap; }
+    .task-text { font-size:13px; width:calc(100% - 60px); flex:none; }
+    .time-badge { font-size:10px; width:100%; order:2; color:var(--blue); padding-left:2px; }
+    .dates-info { font-size:9px; gap:1px; width:100%; order:3; align-items:flex-start; }
+    .task-actions { display:flex; gap:4px; align-items:center; order:4; width:100%; margin-top:2px; }
+    select.inline { font-size:10px; padding:2px 4px; flex:1; }
+    .btn-ic { font-size:13px; padding:4px 6px; }
+    .tl { order:0; }
+    .p-dot { order:0; }
+    .task-cb { order:0; }
 
     .legend { padding:8px 14px; gap:10px; font-size:9px; }
     .legend-item:last-child { display:none; }
@@ -607,18 +613,20 @@ function render(){
           <span>📌 ${fmtDLong(t.created)}</span>
           <span>🗓 ${fmtDLong(t.due)} ${dTxt}</span>
         </div>
-        <select class="inline" onchange="updateField('${t.id}','priority',this.value)">
-          <option value="alta"${t.priority==='alta'?' selected':''}>🔴 Alta</option>
-          <option value="media"${t.priority==='media'?' selected':''}>🟡 Média</option>
-          <option value="baixa"${t.priority==='baixa'?' selected':''}>🔵 Baixa</option>
-        </select>
-        <select class="inline" onchange="updateField('${t.id}','status',this.value)">
-          <option value="fazer"${t.status==='fazer'?' selected':''}>○ A fazer</option>
-          <option value="curso"${t.status==='curso'?' selected':''}>◑ Em curso</option>
-          <option value="concluido"${t.status==='concluido'?' selected':''}>● Concluído</option>
-        </select>
-        <button class="btn-ic" onclick="openModal('${t.id}')" title="Editar">✎</button>
-        <button class="btn-ic btn-del" onclick="deleteTask('${t.id}')" title="Eliminar">✕</button>
+        <div class="task-actions">
+          <select class="inline" onchange="updateField('${t.id}','priority',this.value)">
+            <option value="alta"${t.priority==='alta'?' selected':''}>🔴 Alta</option>
+            <option value="media"${t.priority==='media'?' selected':''}>🟡 Média</option>
+            <option value="baixa"${t.priority==='baixa'?' selected':''}>🔵 Baixa</option>
+          </select>
+          <select class="inline" onchange="updateField('${t.id}','status',this.value)">
+            <option value="fazer"${t.status==='fazer'?' selected':''}>○ A fazer</option>
+            <option value="curso"${t.status==='curso'?' selected':''}>◑ Em curso</option>
+            <option value="concluido"${t.status==='concluido'?' selected':''}>● Concluído</option>
+          </select>
+          <button class="btn-ic" onclick="openModal('${t.id}')" title="Editar">✎</button>
+          <button class="btn-ic btn-del" onclick="deleteTask('${t.id}')" title="Eliminar">✕</button>
+        </div>
       </div>`;
     });
     html+=`</div>`;
