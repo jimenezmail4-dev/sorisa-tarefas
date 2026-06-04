@@ -321,6 +321,7 @@ function prColor(p){ return {alta:'var(--p-alta)',media:'var(--p-media)',baixa:'
 
 // ── API HELPER ────────────────────────────────────
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-54FiOwmK6fqc5C1zdH1lpb1oMXHSUacx5ai4DkfeQxBtonjqkNym1UAa7jvePVrb/exec';
+// v2 - cache bust
 
 function api(params) {
   const url = SCRIPT_URL + '?' + new URLSearchParams(params).toString();
