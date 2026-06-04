@@ -144,6 +144,54 @@
 
   #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1e2133; color:#fff; padding:10px 20px; border-radius:8px; font-size:12px; z-index:500; opacity:0; transition:opacity .3s; pointer-events:none; white-space:nowrap; }
   #toast.show { opacity:1; }
+
+  /* ── MOBILE ─────────────────────────────────────── */
+  @media (max-width: 600px) {
+    header { padding:10px 14px; gap:8px; }
+    .brand-title { font-size:16px; }
+    .stats { gap:5px; margin-left:0; width:100%; justify-content:space-between; }
+    .stat { padding:4px 8px; flex:1; }
+    .stat-n { font-size:14px; }
+    #gcal-hdr { padding-left:0; border-left:none; width:100%; justify-content:space-between; }
+
+    #bulk-bar { padding:8px 14px; top:0; gap:6px; }
+
+    #grid-panel { padding:8px 14px; }
+    .day-col { min-width:80px; }
+    .day-col-hdr { font-size:9px; padding:3px 4px; }
+    .grid-task { font-size:9px; padding:3px 5px; }
+
+    .add-panel { padding:10px 14px; }
+    .add-row { flex-direction:column; gap:6px; }
+    .add-row .fw { width:100%; }
+    input[type=text].ai { min-width:0; width:100%; font-size:14px; }
+    input[type=date], input[type=time] { width:100%; font-size:14px; padding:10px; }
+    select.as { width:100%; font-size:14px; padding:10px; }
+    .btn-add { width:100%; padding:12px; font-size:14px; }
+
+    .filters { padding:8px 14px; gap:4px; }
+    .chip { font-size:10px; padding:2px 8px; }
+
+    main { padding:12px 14px; }
+    .week-header { flex-wrap:wrap; gap:5px; padding:6px 10px; }
+    .week-label { font-size:12px; }
+    .week-range { font-size:10px; }
+    .week-badge { margin-left:0; }
+    .week-sel-btn { font-size:9px; padding:1px 6px; }
+    .btn-ic { font-size:10px; padding:1px 4px; }
+
+    .task { padding:8px 10px 8px 12px; gap:5px; flex-wrap:nowrap; }
+    .task-text { font-size:12px; }
+    .dates-info { font-size:9px; gap:1px; }
+    .time-badge { font-size:9px; }
+    select.inline { font-size:9px; padding:1px 3px; max-width:72px; }
+
+    .legend { padding:8px 14px; gap:10px; font-size:9px; }
+    .legend-item:last-child { display:none; }
+
+    .modal { padding:16px; width:95vw; }
+    .grid2 { grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
@@ -319,17 +367,38 @@ function toast(msg,ms=2500){ const el=document.getElementById('toast'); el.textC
 function prColor(p){ return {alta:'var(--p-alta)',media:'var(--p-media)',baixa:'var(--p-baixa)'}[p]||'var(--muted)'; }
 
 
-// ── API HELPER ────────────────────────────────────
+// ── API HELPER (JSONP — contorna CORS) ───────────
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-54FiOwmK6fqc5C1zdH1lpb1oMXHSUacx5ai4DkfeQxBtonjqkNym1UAa7jvePVrb/exec';
-// v2 - cache bust
+let _cbIdx = 0;
 
 function api(params) {
-  const url = SCRIPT_URL + '?' + new URLSearchParams(params).toString();
-  return fetch(url, {redirect:'follow'})
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    });
+  return new Promise((resolve, reject) => {
+    const cbName = '__gscb' + (++_cbIdx);
+    const timeout = setTimeout(() => {
+      delete window[cbName];
+      document.getElementById(cbName)?.remove();
+      reject(new Error('Timeout'));
+    }, 30000);
+    window[cbName] = (data) => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      document.getElementById(cbName)?.remove();
+      if (data && data.error) reject(new Error(data.error));
+      else resolve(data);
+    };
+    const p = Object.assign({}, params, {callback: cbName});
+    const url = SCRIPT_URL + '?' + new URLSearchParams(p).toString();
+    const s = document.createElement('script');
+    s.id = cbName;
+    s.src = url;
+    s.onerror = () => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      s.remove();
+      reject(new Error('Erro de rede'));
+    };
+    document.head.appendChild(s);
+  });
 }
 // ── LOAD ──────────────────────────────────────────
 function loadAll(){
