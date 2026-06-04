@@ -324,7 +324,11 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-54FiOwmK6fqc5C1zd
 
 function api(params) {
   const url = SCRIPT_URL + '?' + new URLSearchParams(params).toString();
-  return fetch(url, {credentials:'include'}).then(r => r.json());
+  return fetch(url, {redirect:'follow'})
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
 }
 // ── LOAD ──────────────────────────────────────────
 function loadAll(){
