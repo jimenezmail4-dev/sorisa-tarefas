@@ -1,4 +1,4 @@
-const CACHE = 'sorisa-tarefas-v1';
+const CACHE = 'sorisa-tarefas-v3';
 const ASSETS = [
   '/sorisa-tarefas/',
   '/sorisa-tarefas/index.html',
