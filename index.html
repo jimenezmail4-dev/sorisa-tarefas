@@ -373,7 +373,7 @@ function toast(msg,ms=2500){ const el=document.getElementById('toast'); el.textC
 function prColor(p){ return {alta:'var(--p-alta)',media:'var(--p-media)',baixa:'var(--p-baixa)'}[p]||'var(--muted)'; }
 
 
-// ── API HELPER (JSONP — contorna CORS) ───────────
+// ── API HELPER (JSONP) ───────────────────────────
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-54FiOwmK6fqc5C1zdH1lpb1oMXHSUacx5ai4DkfeQxBtonjqkNym1UAa7jvePVrb/exec';
 let _cbIdx = 0;
 
@@ -640,12 +640,6 @@ document.getElementById('hdr-date').textContent =
 document.getElementById('in-due').value=today();
 loadAll();
 </script>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    regs.forEach(r => r.unregister());
-  });
-}
-</script>
+
 </body>
 </html>
