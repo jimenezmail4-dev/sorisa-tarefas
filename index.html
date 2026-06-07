@@ -374,7 +374,7 @@ function prColor(p){ return {alta:'var(--p-alta)',media:'var(--p-media)',baixa:'
 
 
 // ── API HELPER (JSONP) ───────────────────────────
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-54FiOwmK6fqc5C1zdH1lpb1oMXHSUacx5ai4DkfeQxBtonjqkNym1UAa7jvePVrb/exec';
+const SCRIPT_URL = 'https://sorisa-tarefas.joaquim-jimenez.workers.dev';
 let _cbIdx = 0;
 
 function api(params) {
@@ -397,6 +397,7 @@ function api(params) {
     const s = document.createElement('script');
     s.id = cbName;
     s.src = url;
+    s.crossOrigin = 'anonymous';
     s.onerror = () => {
       clearTimeout(timeout);
       delete window[cbName];
